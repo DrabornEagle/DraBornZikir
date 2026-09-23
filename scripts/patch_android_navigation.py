@@ -45,7 +45,19 @@ def patch_main_activity(path: Path) -> None:
     if "DKD_TRANSPARENT_NAVIGATION" in text:
         return
 
-    block = """
+    if path.suffix == ".java":
+        block = """
+    // DKD_TRANSPARENT_NAVIGATION: keep Android system navigation controls over app content.
+    getWindow().setNavigationBarColor(android.graphics.Color.TRANSPARENT);
+    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.P) {
+      getWindow().setNavigationBarDividerColor(android.graphics.Color.TRANSPARENT);
+    }
+    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q) {
+      getWindow().setNavigationBarContrastEnforced(false);
+    }
+"""
+    else:
+        block = """
     // DKD_TRANSPARENT_NAVIGATION: keep Android system navigation controls over app content.
     window.navigationBarColor = android.graphics.Color.TRANSPARENT
     if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.P) {
