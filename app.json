@@ -20,10 +20,19 @@
         "monochromeImage": "./assets/android-icon-monochrome.png"
       }
     },
+    "androidStatusBar": {
+      "backgroundColor": "#00000000",
+      "barStyle": "light-content",
+      "translucent": true
+    },
     "androidNavigationBar": {
       "backgroundColor": "#00000000",
       "barStyle": "light-content",
       "enforceContrast": false
+    },
+    "web": {
+      "output": "single",
+      "favicon": "./assets/favicon.png"
     },
     "plugins": [
       "expo-router",
@@ -43,7 +52,8 @@
       ]
     ],
     "experiments": {
-      "typedRoutes": true
+      "typedRoutes": true,
+      "baseUrl": "/DraBornZikir"
     }
   }
 }
