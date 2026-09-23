@@ -1,18 +1,10 @@
-name: DraBornZikir v0.2 Signed Release APK
+name: DraBornZikir v0.3 Signed Release APK
 
 on:
   workflow_dispatch:
-  push:
-    branches: [main]
-    paths:
-      - 'app.json'
-      - 'package.json'
-      - 'src/**'
-      - 'scripts/**'
-      - '.github/workflows/release-apk.yml'
 
 concurrency:
-  group: drabornzikir-v02-release
+  group: drabornzikir-v03-release
   cancel-in-progress: true
 
 permissions:
@@ -38,7 +30,7 @@ jobs:
         with:
           node-version: '22'
           cache: npm
-      - uses: actions/setup-java@v4
+      - uses: actions/setup-java@v5
         with:
           distribution: temurin
           java-version: '17'
@@ -46,15 +38,23 @@ jobs:
         with:
           python-version: '3.12'
 
+      - name: Require permanent release signing secrets
+        shell: bash
+        run: |
+          test -n "$DKD_ANDROID_KEYSTORE_BASE64" || { echo 'Missing DKD_ANDROID_KEYSTORE_BASE64'; exit 1; }
+          test -n "$DKD_ANDROID_KEYSTORE_PASSWORD" || { echo 'Missing DKD_ANDROID_KEYSTORE_PASSWORD'; exit 1; }
+          test -n "$DKD_ANDROID_KEY_ALIAS" || { echo 'Missing DKD_ANDROID_KEY_ALIAS'; exit 1; }
+          test -n "$DKD_ANDROID_KEY_PASSWORD" || { echo 'Missing DKD_ANDROID_KEY_PASSWORD'; exit 1; }
+
       - name: Install JS dependencies
         run: npm ci
 
-      - name: Validate v0.2 release identity
+      - name: Validate v0.3 release identity
         run: |
           node - <<'NODE'
           const a=require('./app.json').expo;
-          if(a.version!=='0.2.0') throw new Error(`Expected app version 0.2.0, got ${a.version}`);
-          if(Number(a.android.versionCode)!==2) throw new Error(`Expected Android versionCode 2, got ${a.android.versionCode}`);
+          if(a.version!=='0.3.0') throw new Error(`Expected app version 0.3.0, got ${a.version}`);
+          if(Number(a.android.versionCode)!==1) throw new Error(`Expected Android versionCode 1, got ${a.android.versionCode}`);
           if(a.android.package!=='com.draborneagle.drabornzikir') throw new Error('Android package mismatch');
           NODE
 
@@ -63,30 +63,18 @@ jobs:
           npm run typecheck
           npm run lint
 
-      - name: Generate v0.2 zikir icon assets
+      - name: Generate v0.3 zikir icon assets
         run: |
           python -m pip install --quiet pillow
           python scripts/generate_icons.py
 
-      - name: Prepare release signing key
-        id: signing
+      - name: Restore permanent release keystore
         shell: bash
         run: |
           mkdir -p /tmp/dkd-signing
-          if [ -n "$DKD_ANDROID_KEYSTORE_BASE64" ] && [ -n "$DKD_ANDROID_KEYSTORE_PASSWORD" ] && [ -n "$DKD_ANDROID_KEY_ALIAS" ] && [ -n "$DKD_ANDROID_KEY_PASSWORD" ]; then
-            printf '%s' "$DKD_ANDROID_KEYSTORE_BASE64" | base64 --decode > /tmp/dkd-signing/release.jks
-            keytool -list -keystore /tmp/dkd-signing/release.jks -storepass "$DKD_ANDROID_KEYSTORE_PASSWORD" -alias "$DKD_ANDROID_KEY_ALIAS" >/dev/null
-            echo 'mode=repository-secret' >> "$GITHUB_OUTPUT"
-          else
-            PASS="$(openssl rand -hex 20)"
-            ALIAS="drabornzikir-v02"
-            keytool -genkeypair -v -keystore /tmp/dkd-signing/release.jks -storepass "$PASS" -keypass "$PASS" -alias "$ALIAS" -keyalg RSA -keysize 4096 -validity 10000 -dname "CN=DraBornZikir, OU=DraBornEagle, O=DraBornEagle, L=Antalya, ST=Antalya, C=TR"
-            echo "DKD_ANDROID_KEYSTORE_PASSWORD=$PASS" >> "$GITHUB_ENV"
-            echo "DKD_ANDROID_KEY_PASSWORD=$PASS" >> "$GITHUB_ENV"
-            echo "DKD_ANDROID_KEY_ALIAS=$ALIAS" >> "$GITHUB_ENV"
-            echo 'mode=generated-fallback' >> "$GITHUB_OUTPUT"
-          fi
+          printf '%s' "$DKD_ANDROID_KEYSTORE_BASE64" | base64 --decode > /tmp/dkd-signing/release.jks
           test -s /tmp/dkd-signing/release.jks
+          keytool -list -keystore /tmp/dkd-signing/release.jks -storepass "$DKD_ANDROID_KEYSTORE_PASSWORD" -alias "$DKD_ANDROID_KEY_ALIAS" >/dev/null
 
       - name: Prepare Android SDK
         shell: bash
@@ -98,7 +86,7 @@ jobs:
       - name: Generate Android project
         run: npx expo prebuild --platform android --clean
 
-      - name: Inject release keystore
+      - name: Inject permanent release keystore
         shell: bash
         run: |
           mkdir -p android/app/dkd_secure
@@ -130,13 +118,13 @@ jobs:
           mkdir -p release-output
           APK_PATH="$(find android/app/build/outputs/apk/release -type f -name '*.apk' | head -n 1)"
           test -n "$APK_PATH"
-          cp "$APK_PATH" release-output/DraBornZikir-v0.2.0-code2-release.apk
-          "$ANDROID_SDK_ROOT/build-tools/36.0.0/apksigner" verify --verbose release-output/DraBornZikir-v0.2.0-code2-release.apk
-          sha256sum release-output/DraBornZikir-v0.2.0-code2-release.apk | tee release-output/SHA256.txt
-          printf 'Signing mode: %s\n' '${{ steps.signing.outputs.mode }}' > release-output/SIGNING.txt
+          cp "$APK_PATH" release-output/DraBornZikir-v0.3.0-code1-release.apk
+          "$ANDROID_SDK_ROOT/build-tools/36.0.0/apksigner" verify --verbose release-output/DraBornZikir-v0.3.0-code1-release.apk
+          sha256sum release-output/DraBornZikir-v0.3.0-code1-release.apk | tee release-output/SHA256.txt
+          printf 'Signing mode: permanent-repository-secret\n' > release-output/SIGNING.txt
 
       - uses: actions/upload-artifact@v4
         with:
-          name: DraBornZikir_v0_2_0_Signed_Release_APK
+          name: DraBornZikir_v0_3_0_Signed_Release_APK
           path: release-output/
           retention-days: 30
