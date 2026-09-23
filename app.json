@@ -3,7 +3,7 @@
     "name": "DraBornZikir",
     "slug": "DraBornZikir",
     "scheme": "drabornzikir",
-    "version": "0.2.0",
+    "version": "0.3.0",
     "orientation": "portrait",
     "userInterfaceStyle": "dark",
     "icon": "./assets/icon.png",
@@ -12,10 +12,10 @@
     },
     "android": {
       "package": "com.draborneagle.drabornzikir",
-      "versionCode": 2,
+      "versionCode": 1,
       "edgeToEdgeEnabled": true,
       "adaptiveIcon": {
-        "backgroundColor": "#071827",
+        "backgroundColor": "#03151E",
         "foregroundImage": "./assets/android-icon-foreground.png",
         "monochromeImage": "./assets/android-icon-monochrome.png"
       }
@@ -38,7 +38,7 @@
       [
         "expo-splash-screen",
         {
-          "backgroundColor": "#071827"
+          "backgroundColor": "#03151E"
         }
       ]
     ],
