@@ -76,8 +76,10 @@ jobs:
         shell: bash
         run: |
           mkdir -p /tmp/dkd-signing
-          printf '%s' "$DKD_ANDROID_KEYSTORE_BASE64" | base64 --decode > /tmp/dkd-signing/release.jks
+          CLEAN_KEYSTORE_BASE64="$(printf '%s' "$DKD_ANDROID_KEYSTORE_BASE64" | tr -cd 'A-Za-z0-9+/=')"
+          printf '%s' "$CLEAN_KEYSTORE_BASE64" | base64 --decode > /tmp/dkd-signing/release.jks
           test -s /tmp/dkd-signing/release.jks
+          printf '%s  %s\n' '49aa18fb1a18d72143af908245d8eaef90aaafbada52a00337c42936ddef364f' '/tmp/dkd-signing/release.jks' | sha256sum -c -
           keytool -list -keystore /tmp/dkd-signing/release.jks -storepass "$DKD_ANDROID_KEYSTORE_PASSWORD" -alias "$DKD_ANDROID_KEY_ALIAS" >/dev/null
 
       - name: Prepare Android SDK
@@ -125,7 +127,7 @@ jobs:
           cp "$APK_PATH" release-output/DraBornZikir-v0.3.0-code1-release.apk
           "$ANDROID_SDK_ROOT/build-tools/36.0.0/apksigner" verify --verbose release-output/DraBornZikir-v0.3.0-code1-release.apk
           sha256sum release-output/DraBornZikir-v0.3.0-code1-release.apk | tee release-output/SHA256.txt
-          printf 'Signing mode: permanent-repository-secret\n' > release-output/SIGNING.txt
+          printf 'Signing mode: permanent-repository-secret\nKeystore SHA256: 49aa18fb1a18d72143af908245d8eaef90aaafbada52a00337c42936ddef364f\n' > release-output/SIGNING.txt
 
       - uses: actions/upload-artifact@v4
         with:
