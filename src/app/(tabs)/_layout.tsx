@@ -12,9 +12,9 @@ const sections = [
   { name: 'progress', href: '/progress', webHref: '/DraBornZikir/progress/', title: 'Ritüelim', icon: ChartNoAxesCombined }
 ] as const;
 
-function dkdNavigate(href: '/', webHref: string): void;
-function dkdNavigate(href: '/library' | '/radio' | '/progress', webHref: string): void;
-function dkdNavigate(href: '/' | '/library' | '/radio' | '/progress', webHref: string) {
+type DkdTabHref = '/' | '/library' | '/radio' | '/progress';
+
+function dkdNavigate(href: DkdTabHref, webHref: string) {
   if (Platform.OS === 'web') {
     const browserLocation = (globalThis as typeof globalThis & { location?: { assign: (url: string) => void } }).location;
     if (browserLocation) {
