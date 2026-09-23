@@ -41,7 +41,7 @@ export default function RootLayout() {
   return <SafeAreaProvider>
     <SessionProvider>
       <View style={{ flex: 1, backgroundColor: colors.bg }}>
-        <StatusBar style="light" translucent backgroundColor="transparent" />
+        <StatusBar style="light" backgroundColor="transparent" />
         <Stack screenOptions={{
           contentStyle: { backgroundColor: colors.bg },
           headerStyle: { backgroundColor: colors.bg },
@@ -60,7 +60,7 @@ export default function RootLayout() {
 
 const styles = StyleSheet.create({
   splash: {
-    ...StyleSheet.absoluteFillObject,
+    position: 'absolute', top: 0, right: 0, bottom: 0, left: 0,
     zIndex: 9999,
     alignItems: 'center',
     justifyContent: 'center',
@@ -78,45 +78,10 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.36,
     shadowRadius: 40
   },
-  logo: {
-    width: 180,
-    height: 180,
-    alignItems: 'center',
-    justifyContent: 'center'
-  },
-  crescent: {
-    color: '#F5D69E',
-    fontSize: 112,
-    lineHeight: 126,
-    textShadowColor: '#F5D69E66',
-    textShadowRadius: 18
-  },
-  tasbih: {
-    position: 'absolute',
-    bottom: 26,
-    color: '#56DDC4',
-    fontSize: 13,
-    letterSpacing: -1.5
-  },
-  brand: {
-    marginTop: 14,
-    color: '#FFFFFF',
-    fontSize: 31,
-    fontWeight: '900',
-    letterSpacing: -0.9
-  },
-  slogan: {
-    marginTop: 8,
-    color: '#9FB8C2',
-    fontSize: 14,
-    fontWeight: '600'
-  },
-  version: {
-    position: 'absolute',
-    bottom: 36,
-    color: '#5CDCC7',
-    fontSize: 11,
-    fontWeight: '900',
-    letterSpacing: 1.6
-  }
+  logo: { width: 180, height: 180, alignItems: 'center', justifyContent: 'center' },
+  crescent: { color: '#F5D69E', fontSize: 112, lineHeight: 126, textShadowColor: '#F5D69E66', textShadowRadius: 18 },
+  tasbih: { position: 'absolute', bottom: 26, color: '#56DDC4', fontSize: 13, letterSpacing: -1.5 },
+  brand: { marginTop: 14, color: '#FFFFFF', fontSize: 31, fontWeight: '900', letterSpacing: -0.9 },
+  slogan: { marginTop: 8, color: '#9FB8C2', fontSize: 14, fontWeight: '600' },
+  version: { position: 'absolute', bottom: 36, color: '#5CDCC7', fontSize: 11, fontWeight: '900', letterSpacing: 1.6 }
 });
