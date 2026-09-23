@@ -5,6 +5,11 @@ on:
   push:
     branches: [main]
     paths:
+      - 'app.json'
+      - 'package.json'
+      - 'package-lock.json'
+      - 'src/**'
+      - 'scripts/**'
       - '.github/workflows/release-apk.yml'
 
 concurrency:
@@ -60,6 +65,8 @@ jobs:
           if(a.version!=='0.3.0') throw new Error(`Expected app version 0.3.0, got ${a.version}`);
           if(Number(a.android.versionCode)!==1) throw new Error(`Expected Android versionCode 1, got ${a.android.versionCode}`);
           if(a.android.package!=='com.draborneagle.drabornzikir') throw new Error('Android package mismatch');
+          if(a.androidNavigationBar?.backgroundColor!=='#00000000') throw new Error('Navigation bar is not transparent');
+          if(a.androidNavigationBar?.enforceContrast!==false) throw new Error('Navigation contrast must be disabled');
           NODE
 
       - name: Typecheck and lint
@@ -110,6 +117,13 @@ jobs:
       - name: Generate Android project
         run: npx expo prebuild --platform android --clean
 
+      - name: Force transparent Android system navigation
+        shell: bash
+        run: |
+          python scripts/patch_android_navigation.py
+          grep -R 'android:navigationBarColor.*transparent' android/app/src/main/res/values/styles.xml
+          grep -R 'isNavigationBarContrastEnforced = false\|setNavigationBarContrastEnforced(false)' android/app/src/main/java
+
       - name: Inject permanent release keystore
         shell: bash
         run: |
@@ -145,7 +159,7 @@ jobs:
           cp "$APK_PATH" release-output/DraBornZikir-v0.3.0-code1-release.apk
           "$ANDROID_SDK_ROOT/build-tools/36.0.0/apksigner" verify --verbose release-output/DraBornZikir-v0.3.0-code1-release.apk
           sha256sum release-output/DraBornZikir-v0.3.0-code1-release.apk | tee release-output/SHA256.txt
-          printf 'Signing mode: permanent-repository-secret\nKeystore SHA256: 49aa18fb1a18d72143af908245d8eaef90aaafbada52a00337c42936ddef364f\n' > release-output/SIGNING.txt
+          printf 'Signing mode: permanent-repository-secret\nKeystore SHA256: 49aa18fb1a18d72143af908245d8eaef90aaafbada52a00337c42936ddef364f\nAndroid navigation: native transparent + contrast disabled\n' > release-output/SIGNING.txt
 
       - uses: actions/upload-artifact@v4
         with:
