@@ -9,10 +9,10 @@ DraBornEagle ekosistemi için Expo Go ile açılan zikir, dua ve canlı radyo uy
 - Her içerik için günlük dijital tesbih; seçilebilir kişisel hedef, güvenli sıfırlama, cihazda kayıt.
 - Günlük toplam, yedi günlük görünüm, hedefe ulaşılan günlerin serisi.
 - İzin verildiğinde her gün 08:00 veya 20:00 için tek yerel hatırlatma.
-- İhlâs, Felak ve Nâs sureleri için **Abdullah Avvad el-Cüheynî'nin gerçek tilavetine** bağlantı. Diğer zikirlerde cihazda Arapça ses varsa yavaş Arapça seslendirme; yoksa yavaş Türkçe okunuş. Cihaz sesini gerçek hoca kaydı olarak tanıtmaz.
+- İhlâs, Felak ve Nâs sureleri için **Abdullah Avvad el-Cüheynî'nin gerçek tilavetine** bağlantı. Diğer 10 zikir ve dua için uygulamaya eklenmiş, sakin tempolu Arapça **üretilmiş seslendirme**. Bu kayıtlar çevrim dışı açılır; gerçek hoca kaydı olarak tanıtılmaz. Yeni bir içerikte dosya yoksa cihaz sesi yedek olarak kullanılır.
 - Diyanet Radyo, Diyanet Kur'an Radyo ve Diyanet Risalet Radyo canlı HLS akışları; her kanalın resmî dinleme sayfasına doğrudan geçiş.
 
-Metinler ve sayaç çevrim dışı çalışır. Tilavet ve radyo için internet gerekir. Yayınlar ve ses dosyaları ilgili yayıncıların sunucularından doğrudan açılır; uygulama onları kopyalamaz. **DraBornZikir, Diyanet İşleri Başkanlığı'nın resmî uygulaması değildir.**
+Metinler, sayaç ve 10 üretilmiş Arapça ses dosyası çevrim dışı çalışır. Gerçek kâri tilaveti ve radyo için internet gerekir. Kâri tilaveti ve yayınlar ilgili sunuculardan doğrudan açılır; uygulama bu kayıtları kopyalamaz. **DraBornZikir, Diyanet İşleri Başkanlığı'nın resmî uygulaması değildir.**
 
 ### Kaynaklar ve sınırlar
 

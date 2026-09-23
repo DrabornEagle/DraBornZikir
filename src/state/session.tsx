@@ -124,20 +124,20 @@ export function SessionProvider({ children }: { children: ReactNode }) {
     setCurrent(null);
   };
 
-  const startStream = async (key: string, title: string, subtitle: string, url: string, kind: 'radio' | 'recitation') => {
+  const startStream = async (key: string, title: string, subtitle: string, source: string | number, kind: 'radio' | 'recitation') => {
     await Speech.stop().catch(() => {});
     setSpeaking(false);
     player.pause();
     setCurrent({ key, title, subtitle, kind });
-    player.replace({ uri: url });
+    player.replace(typeof source === 'number' ? source : { uri: source });
     player.play();
   };
 
   const playZikir = async (item: Zikir) => {
     const key = 'zikir:' + item.id;
     if (current?.key === key && (playing || status.isBuffering)) { stopAudio(); return; }
-    if (item.audioUrl) {
-      try { await startStream(key, item.title, 'Kâri • ' + item.reciter, item.audioUrl, 'recitation'); }
+    if (item.audioUrl || item.audioAsset) {
+      try { await startStream(key, item.title, item.audioUrl ? 'Kâri • ' + item.reciter : 'Üretilmiş Arapça seslendirme', item.audioAsset ?? item.audioUrl!, 'recitation'); }
       catch { setCurrent(null); Alert.alert('Ses açılamadı', 'Bağlantını kontrol edip yeniden deneyebilirsin.'); }
       return;
     }

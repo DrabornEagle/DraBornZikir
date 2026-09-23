@@ -9,6 +9,7 @@ export type Zikir = {
   note: string;
   sourceLabel: string;
   sourceUrl: string;
+  audioAsset?: number;
   audioUrl?: string;
   reciter?: string;
   tint: string;
@@ -25,6 +26,7 @@ const dkdSurahAudio = 'https://download.quranicaudio.com/quran/abdullaah_3awwaad
 export const zikirs: Zikir[] = [
   {
     id: 'subhanallah', title: 'Sübhânallah', category: 'Tesbih',
+    audioAsset: require('../../assets/audio/subhanallah.mp3'),
     arabic: 'سُبْحَانَ اللّٰهِ', pronunciation: 'Sübhânallah',
     meaning: 'Allah’ı her türlü eksiklikten tenzih ederim.',
     note: 'Namaz sonrası tesbihatta 33 kez tavsiye edilir.',
@@ -33,6 +35,7 @@ export const zikirs: Zikir[] = [
   },
   {
     id: 'elhamdulillah', title: 'Elhamdülillah', category: 'Tesbih',
+    audioAsset: require('../../assets/audio/elhamdulillah.mp3'),
     arabic: 'الْحَمْدُ لِلّٰهِ', pronunciation: 'Elhamdülillah',
     meaning: 'Hamd ve övgü Allah’a mahsustur.',
     note: 'Namaz sonrası tesbihatta 33 kez tavsiye edilir.',
@@ -41,6 +44,7 @@ export const zikirs: Zikir[] = [
   },
   {
     id: 'allahu-ekber', title: 'Allahu ekber', category: 'Tesbih',
+    audioAsset: require('../../assets/audio/allahu-ekber.mp3'),
     arabic: 'اللّٰهُ أَكْبَرُ', pronunciation: 'Allahu ekber',
     meaning: 'Allah en büyüktür.',
     note: 'Namaz sonrası tesbihatta 33 kez tavsiye edilir.',
@@ -49,6 +53,7 @@ export const zikirs: Zikir[] = [
   },
   {
     id: 'subhanallahi-bihamdihi', title: 'Sübhânallahi ve bihamdihî', category: 'Tesbih',
+    audioAsset: require('../../assets/audio/subhanallahi-bihamdihi.mp3'),
     arabic: 'سُبْحَانَ اللّٰهِ وَبِحَمْدِهِ', pronunciation: 'Sübhânallahi ve bihamdihî',
     meaning: 'Allah’ı överek O’nu eksikliklerden tenzih ederim.',
     note: 'Hadislerde geçen bir zikir. Tekrar hedefini kendin belirleyebilirsin.',
@@ -57,6 +62,7 @@ export const zikirs: Zikir[] = [
   },
   {
     id: 'la-ilahe-illallah', title: 'Lâ ilâhe illallah', category: 'Tesbih',
+    audioAsset: require('../../assets/audio/la-ilahe-illallah.mp3'),
     arabic: 'لَا إِلٰهَ إِلَّا اللّٰهُ', pronunciation: 'Lâ ilâhe illallah',
     meaning: 'Allah’tan başka ilâh yoktur.',
     note: 'Kelime-i tevhid; dilediğin kadar okuyabilirsin.',
@@ -65,6 +71,7 @@ export const zikirs: Zikir[] = [
   },
   {
     id: 'estagfirullah', title: 'Estağfirullah', category: 'Dua',
+    audioAsset: require('../../assets/audio/estagfirullah.mp3'),
     arabic: 'أَسْتَغْفِرُ اللّٰهَ', pronunciation: 'Estağfirullah',
     meaning: 'Allah’tan bağışlanma dilerim.',
     note: 'Namazdan sonra üç defa istiğfar edildiği aktarılır.',
@@ -73,6 +80,7 @@ export const zikirs: Zikir[] = [
   },
   {
     id: 'allahumme-selam', title: 'Allahümme ente’s-selâm', category: 'Dua',
+    audioAsset: require('../../assets/audio/allahumme-selam.mp3'),
     arabic: 'اللَّهُمَّ أَنْتَ السَّلَامُ وَمِنْكَ السَّلَامُ تَبَارَكْتَ يَا ذَا الْجَلَالِ وَالْإِكْرَامِ',
     pronunciation: 'Allahümme ente’s-selâmü ve minke’s-selâm, tebârekte yâ ze’l-celâli ve’l-ikrâm.',
     meaning: 'Allah’ım, esenlik sensin; esenlik sendendir. Ey yücelik ve ikram sahibi, sen mübareksin.',
@@ -82,6 +90,7 @@ export const zikirs: Zikir[] = [
   },
   {
     id: 'hasbunallah', title: 'Hasbünallah', category: 'Dua',
+    audioAsset: require('../../assets/audio/hasbunallah.mp3'),
     arabic: 'حَسْبُنَا اللّٰهُ وَنِعْمَ الْوَكِيلُ', pronunciation: 'Hasbünallahü ve ni’me’l-vekîl.',
     meaning: 'Allah bize yeter; O ne güzel vekildir.',
     note: 'Âl-i İmrân sûresinin 173. âyetinde yer alır.',
@@ -90,6 +99,7 @@ export const zikirs: Zikir[] = [
   },
   {
     id: 'rabbena-atina', title: 'Rabbena âtinâ', category: 'Dua',
+    audioAsset: require('../../assets/audio/rabbena-atina.mp3'),
     arabic: 'رَبَّنَا آتِنَا فِي الدُّنْيَا حَسَنَةً وَفِي الْآخِرَةِ حَسَنَةً وَقِنَا عَذَابَ النَّارِ',
     pronunciation: 'Rabbenâ âtinâ fi’d-dünyâ haseneten ve fi’l-âhireti haseneten ve kınâ azâbe’n-nâr.',
     meaning: 'Rabbimiz, bize dünyada ve ahirette iyilik ver; bizi ateşin azabından koru.',
@@ -99,6 +109,7 @@ export const zikirs: Zikir[] = [
   },
   {
     id: 'rabbizidni-ilma', title: 'Rabbim, ilmimi artır', category: 'Dua',
+    audioAsset: require('../../assets/audio/rabbizidni-ilma.mp3'),
     arabic: 'رَبِّ زِدْنِي عِلْمًا', pronunciation: 'Rabbi zidnî ilmâ.',
     meaning: 'Rabbim, ilmimi artır.',
     note: 'Tâhâ sûresi 114. âyette yer alan dua.',

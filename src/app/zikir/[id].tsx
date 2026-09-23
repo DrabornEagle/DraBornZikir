@@ -58,9 +58,10 @@ export default function ZikirDetailScreen() {
       <View style={{ gap: 11 }}>
         <AudioBadge item={item} />
         <View style={{ flexDirection: 'row', alignItems: 'flex-start', gap: 8 }}>
-          {item.audioUrl ? <Headphones size={16} color={item.tint} /> : <Volume2 size={16} color={colors.gold} />}
+          {item.audioUrl || item.audioAsset ? <Headphones size={16} color={item.tint} /> : <Volume2 size={16} color={colors.gold} />}
           <Text style={{ flex: 1, color: colors.muted, fontSize: 12, lineHeight: 18 }}>{item.audioUrl
             ? 'Gerçek kâri tilaveti · ' + item.reciter + '. Ses internetten oynatılır.'
+            : item.audioAsset ? 'Sakin tempoda üretilmiş Arapça seslendirme. İnternet gerekmez; gerçek hoca kaydı değildir.'
             : 'Yavaş seslendirme telefonunun Arapça sesi varsa Arapça, yoksa Türkçe cihaz sesiyle yapılır; hoca kaydı değildir.'}</Text>
         </View>
         {isError ? <Text style={{ color: colors.coral, fontSize: 12 }}>Ses yüklenemedi. Bağlantını kontrol edip yeniden dene.</Text> : null}

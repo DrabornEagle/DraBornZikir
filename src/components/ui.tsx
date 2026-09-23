@@ -81,7 +81,7 @@ export function ZikirCard({ item, compact = false }: { item: Zikir; compact?: bo
         <View style={{ height: 1, backgroundColor: '#4E697252' }} />
         <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: 8 }}>
           <Text style={{ color: colors.muted, fontSize: 12, flex: 1 }} numberOfLines={1}>{item.meaning}</Text>
-          {item.audioUrl ? <Headphones size={16} color={item.tint} /> : <Volume2 size={16} color={item.tint} />}
+          {item.audioUrl || item.audioAsset ? <Headphones size={16} color={item.tint} /> : <Volume2 size={16} color={item.tint} />}
           <ArrowRight size={17} color={item.tint} />
         </View>
       </LinearGradient>
