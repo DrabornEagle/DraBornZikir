@@ -1,25 +1,16 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import * as Notifications from 'expo-notifications';
 import { Bell, CalendarDays, Check, Flame, Target } from 'lucide-react-native';
 import { useEffect, useState } from 'react';
 import { Alert, Pressable, Text, View } from 'react-native';
 import { Eyebrow, Page, ProgressRing, SectionHeading } from '../../components/ui';
 import { zikirs } from '../../data/zikirs';
+import { cancelReminder, requestReminderPermission, scheduleDailyReminder } from '../../services/reminders';
 import { useSession } from '../../state/session';
 import { colors } from '../../theme/colors';
 import { dayKey, shiftDay, streak, todayTotal } from '../../utils/daily';
 
 const REMINDER_KEY = 'dkd_drabornzikir_reminder_v1';
 type Reminder = { hour: number; identifier: string } | null;
-
-Notifications.setNotificationHandler({
-  handleNotification: async () => ({
-    shouldShowBanner: true,
-    shouldShowList: true,
-    shouldPlaySound: false,
-    shouldSetBadge: false
-  })
-});
 
 export default function ProgressScreen() {
   const { counts, total, dailyGoal, setDailyGoal } = useSession();
@@ -39,24 +30,18 @@ export default function ProgressScreen() {
     setBusy(true);
     try {
       if (hour !== null) {
-        await Notifications.setNotificationChannelAsync('dkd-zikir', {
-          name: 'Günlük zikir hatırlatması', importance: 3
-        });
-        const permission = await Notifications.requestPermissionsAsync();
-        if (!permission.granted) {
+        const granted = await requestReminderPermission();
+        if (!granted) {
           Alert.alert('Bildirim izni gerekli', 'Günlük hatırlatmayı açmak için cihaz ayarlarından bildirimlere izin ver.');
           return;
         }
       }
-      if (reminder?.identifier) await Notifications.cancelScheduledNotificationAsync(reminder.identifier);
+      if (reminder?.identifier) await cancelReminder(reminder.identifier);
       if (hour === null) {
         setReminder(null);
         await AsyncStorage.removeItem(REMINDER_KEY);
       } else {
-        const identifier = await Notifications.scheduleNotificationAsync({
-          content: { title: 'DraBornZikir ✦', body: 'Bugünün zikrine birkaç dakika ayırmak ister misin?' },
-          trigger: { type: Notifications.SchedulableTriggerInputTypes.DAILY, hour, minute: 0, channelId: 'dkd-zikir' }
-        });
+        const identifier = await scheduleDailyReminder(hour);
         const next = { hour, identifier };
         setReminder(next);
         await AsyncStorage.setItem(REMINDER_KEY, JSON.stringify(next));

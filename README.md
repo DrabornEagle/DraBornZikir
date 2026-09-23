@@ -1,4 +1,4 @@
-# DraBornZikir · v0.1.0
+# DraBornZikir · v0.1.1
 
 DraBornEagle ekosistemi için Expo Go ile açılan zikir, dua ve canlı radyo uygulaması. **APK üretilmez.** İlk test hedefi: Android **Expo Go 58.0.0 / SDK 58**.
 
@@ -20,7 +20,7 @@ Namaz tesbihatı ve sayıları için [Diyanet fetvası](https://kurul.diyanet.go
 
 Radyo akış adresleri ağda kontrol edilmiştir, fakat yayıncı tarafından zamanla değiştirilebilir. Uygulama içi yayın açılmazsa karttaki dış bağlantı ilgili kanalın resmî sayfasını açar. Expo Go'da arka plan radyo oynatması garanti edilmez; bu sürüm açık uygulama testine yöneliktir.
 
-SDK 58 için npm'deki en güncel yayımlanmış **58.0.0-preview.6** Expo sürümü kullanılır. Önizleme sürümünde React Native eş bağımlılıkları için proje npm ayarı vardır. Expo 58 kararlı npm sürümü çıktığında bu sabitleme ve kilit dosyası ayrıca güncellenmelidir.
+Bu sürüm, Expo Go 58 ile uyumlu **58.0.0-preview.6** Expo paketini kullanır. Önizleme sürümünde React Native eş bağımlılıkları için proje npm ayarı vardır. Expo 58 kararlı npm sürümü çıktığında bu sabitleme ve kilit dosyası ayrıca güncellenmelidir.
 
 ## Termux · aynı Android telefonda Expo Go
 
@@ -44,7 +44,7 @@ Sunucu penceresi açık kalmalıdır. Geliştirici bilgisayarı ve ayrı telefon
 
 ### Güncelleme
 
-Yeni sürümü mevcut klasörde üzerine açabilirsin:
+Önce açık Metro sunucusunu Termux'ta **Ctrl+C** ile durdur. Yeni sürümü mevcut klasörde üzerine açabilirsin:
 
     cd ~/projects
     curl -fL 'https://github.com/DrabornEagle/DraBornZikir/archive/refs/heads/main.zip' -o DraBornZikir_Source.zip
@@ -53,11 +53,16 @@ Yeni sürümü mevcut klasörde üzerine açabilirsin:
     npm ci
     npx expo start --localhost -c
 
+Ardından Expo Go'daki eski proje ekranını kapatıp **exp://127.0.0.1:8081** adresini yeniden aç. Günlük sayımlar telefon uygulama verisinde tutulduğu için kaynak ZIP'ini güncellemek bu kayıtları silmez.
+
 ## Geliştirici denetimleri
 
     npm ci
     npm run typecheck
     npm run lint
-    npx expo export --platform android
+    npx expo export --platform android --output-dir /tmp/dkd-expo-export
+    node scripts/check-expo-go-bundle.cjs /tmp/dkd-expo-export
 
 GitHub Actions her kod değişikliğinde tür denetimi, lint ve Android JS paketi oluşturma kontrolü yapar. APK, imzalama, Google Play yüklemesi ve sunucu/veritabanı bu sürümün kapsamı dışındadır.
+
+**Expo Go 58 hatırlatma uyumluluğu:** Bildirim paketi `58.0.6` sürümünde sabittir. Expo Go'da bulunmayan `ExpoTopicSubscriptionModule` modülünün uygulama açılırken yüklenmesini engellemek için yalnızca yerel bildirim işlevleri içe aktarılır. Bildirim paketini yükseltirken bu içe aktarmalar ve Android paketi yeniden kontrol edilmelidir.
