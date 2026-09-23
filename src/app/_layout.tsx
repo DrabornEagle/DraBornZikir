@@ -76,7 +76,7 @@ function DkdStartupSplash() {
 
   return (
     <Animated.View pointerEvents="none" style={[styles.splash, { opacity: fade }]}>
-      <LinearGradient colors={['#03151E', '#072934', '#0A1E2A']} style={StyleSheet.absoluteFillObject} />
+      <LinearGradient colors={['#03151E', '#072934', '#0A1E2A']} style={styles.fill} />
       <View style={styles.ambientTop} />
       <View style={styles.ambientBottom} />
 
@@ -132,6 +132,7 @@ export default function RootLayout() {
 }
 
 const styles = StyleSheet.create({
+  fill: { position: 'absolute', top: 0, right: 0, bottom: 0, left: 0 },
   splash: {
     position: 'absolute', top: 0, right: 0, bottom: 0, left: 0,
     zIndex: 9999,
