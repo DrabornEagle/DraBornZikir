@@ -1,6 +1,6 @@
 import { Stack } from 'expo-router/stack';
 import { StatusBar } from 'expo-status-bar';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Animated, Easing, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { SessionProvider } from '../state/session';
@@ -8,10 +8,10 @@ import { colors } from '../theme/colors';
 
 function DkdStartupSplash() {
   const [visible, setVisible] = useState(true);
-  const opacity = useRef(new Animated.Value(1)).current;
-  const scale = useRef(new Animated.Value(0.72)).current;
-  const glow = useRef(new Animated.Value(0.15)).current;
-  const bead = useRef(new Animated.Value(0)).current;
+  const [opacity] = useState(() => new Animated.Value(1));
+  const [scale] = useState(() => new Animated.Value(0.72));
+  const [glow] = useState(() => new Animated.Value(0.15));
+  const [bead] = useState(() => new Animated.Value(0));
 
   useEffect(() => {
     const entrance = Animated.parallel([
