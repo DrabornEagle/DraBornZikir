@@ -10,6 +10,10 @@ import { useSession } from '../../state/session';
 import { colors } from '../../theme/colors';
 import { dayKey } from '../../utils/daily';
 
+export function generateStaticParams() {
+  return zikirs.map((item) => ({ id: item.id }));
+}
+
 export default function ZikirDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const item = zikirs.find((entry) => entry.id === id);
