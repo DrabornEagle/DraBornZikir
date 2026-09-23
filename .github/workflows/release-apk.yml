@@ -76,10 +76,28 @@ jobs:
         shell: bash
         run: |
           mkdir -p /tmp/dkd-signing
-          CLEAN_KEYSTORE_BASE64="$(printf '%s' "$DKD_ANDROID_KEYSTORE_BASE64" | tr -cd 'A-Za-z0-9+/=')"
-          printf '%s' "$CLEAN_KEYSTORE_BASE64" | base64 --decode > /tmp/dkd-signing/release.jks
-          test -s /tmp/dkd-signing/release.jks
-          printf '%s  %s\n' '49aa18fb1a18d72143af908245d8eaef90aaafbada52a00337c42936ddef364f' '/tmp/dkd-signing/release.jks' | sha256sum -c -
+          python - <<'PY'
+          import base64, hashlib, os, re
+          raw = os.environ['DKD_ANDROID_KEYSTORE_BASE64'].strip()
+          prefix = 'DKD_ANDROID_KEYSTORE_BASE64='
+          if raw.startswith(prefix):
+              raw = raw[len(prefix):]
+          raw = raw.strip().strip('"').strip("'")
+          raw = raw.replace('\\n', '').replace('\\r', '')
+          raw = ''.join(raw.split())
+          raw = re.sub(r'[^A-Za-z0-9+/=]', '', raw)
+          payload = raw.rstrip('=')
+          raw = payload + ('=' * ((4 - len(payload) % 4) % 4))
+          data = base64.b64decode(raw, validate=True)
+          expected = '49aa18fb1a18d72143af908245d8eaef90aaafbada52a00337c42936ddef364f'
+          actual = hashlib.sha256(data).hexdigest()
+          print(f'Permanent signing payload decoded: {len(data)} bytes')
+          if len(data) != 4484 or actual != expected:
+              raise SystemExit(f'Permanent keystore checksum mismatch: decoded_bytes={len(data)} sha256={actual}')
+          with open('/tmp/dkd-signing/release.jks', 'wb') as f:
+              f.write(data)
+          print('Permanent keystore SHA256 verified')
+          PY
           keytool -list -keystore /tmp/dkd-signing/release.jks -storepass "$DKD_ANDROID_KEYSTORE_PASSWORD" -alias "$DKD_ANDROID_KEY_ALIAS" >/dev/null
 
       - name: Prepare Android SDK
