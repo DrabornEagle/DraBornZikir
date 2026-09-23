@@ -1,16 +1,29 @@
 import { Tabs, router } from 'expo-router';
 import { BookOpenText, ChartNoAxesCombined, House, Pause, Play, Radio, X } from 'lucide-react-native';
-import { Pressable, Text, View } from 'react-native';
+import { Platform, Pressable, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useSession } from '../../state/session';
 import { colors } from '../../theme/colors';
 
 const sections = [
-  { name: 'index', href: '/', title: 'Bugün', icon: House },
-  { name: 'library', href: '/library', title: 'Keşfet', icon: BookOpenText },
-  { name: 'radio', href: '/radio', title: 'Radyo', icon: Radio },
-  { name: 'progress', href: '/progress', title: 'Ritüelim', icon: ChartNoAxesCombined }
+  { name: 'index', href: '/', webHref: '/DraBornZikir/', title: 'Bugün', icon: House },
+  { name: 'library', href: '/library', webHref: '/DraBornZikir/library/', title: 'Keşfet', icon: BookOpenText },
+  { name: 'radio', href: '/radio', webHref: '/DraBornZikir/radio/', title: 'Radyo', icon: Radio },
+  { name: 'progress', href: '/progress', webHref: '/DraBornZikir/progress/', title: 'Ritüelim', icon: ChartNoAxesCombined }
 ] as const;
+
+function dkdNavigate(href: '/', webHref: string): void;
+function dkdNavigate(href: '/library' | '/radio' | '/progress', webHref: string): void;
+function dkdNavigate(href: '/' | '/library' | '/radio' | '/progress', webHref: string) {
+  if (Platform.OS === 'web') {
+    const browserLocation = (globalThis as typeof globalThis & { location?: { assign: (url: string) => void } }).location;
+    if (browserLocation) {
+      browserLocation.assign(webHref);
+      return;
+    }
+  }
+  router.navigate(href);
+}
 
 export default function TabLayout() {
   const insets = useSafeAreaInsets();
@@ -29,7 +42,7 @@ export default function TabLayout() {
         {sections.map((section) => {
           const selected = state.routes[state.index].name === section.name;
           const Icon = section.icon;
-          return <Pressable key={section.name} accessibilityRole="tab" accessibilityState={{ selected }} onPress={() => router.navigate(section.href)} style={{ flex: 1, alignItems: 'center', gap: 3, paddingVertical: 6 }}>
+          return <Pressable key={section.name} accessibilityRole="tab" accessibilityState={{ selected }} onPress={() => dkdNavigate(section.href, section.webHref)} style={{ flex: 1, alignItems: 'center', gap: 3, paddingVertical: 6 }}>
             <View style={{ backgroundColor: selected ? '#25544F' : 'transparent', borderRadius: 14, paddingHorizontal: 20, paddingVertical: 5 }}>
               <Icon size={20} color={selected ? colors.teal : colors.muted} strokeWidth={selected ? 2.6 : 1.8} />
             </View>
