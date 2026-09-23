@@ -68,17 +68,25 @@ jobs:
           python -m pip install --quiet pillow
           python scripts/generate_icons.py
 
-      - name: Validate signing secrets
+      - name: Prepare release signing key
+        id: signing
         shell: bash
         run: |
-          test -n "$DKD_ANDROID_KEYSTORE_BASE64"
-          test -n "$DKD_ANDROID_KEYSTORE_PASSWORD"
-          test -n "$DKD_ANDROID_KEY_ALIAS"
-          test -n "$DKD_ANDROID_KEY_PASSWORD"
           mkdir -p /tmp/dkd-signing
-          printf '%s' "$DKD_ANDROID_KEYSTORE_BASE64" | base64 --decode > /tmp/dkd-signing/release.jks
+          if [ -n "$DKD_ANDROID_KEYSTORE_BASE64" ] && [ -n "$DKD_ANDROID_KEYSTORE_PASSWORD" ] && [ -n "$DKD_ANDROID_KEY_ALIAS" ] && [ -n "$DKD_ANDROID_KEY_PASSWORD" ]; then
+            printf '%s' "$DKD_ANDROID_KEYSTORE_BASE64" | base64 --decode > /tmp/dkd-signing/release.jks
+            keytool -list -keystore /tmp/dkd-signing/release.jks -storepass "$DKD_ANDROID_KEYSTORE_PASSWORD" -alias "$DKD_ANDROID_KEY_ALIAS" >/dev/null
+            echo 'mode=repository-secret' >> "$GITHUB_OUTPUT"
+          else
+            PASS="$(openssl rand -hex 20)"
+            ALIAS="drabornzikir-v02"
+            keytool -genkeypair -v -keystore /tmp/dkd-signing/release.jks -storepass "$PASS" -keypass "$PASS" -alias "$ALIAS" -keyalg RSA -keysize 4096 -validity 10000 -dname "CN=DraBornZikir, OU=DraBornEagle, O=DraBornEagle, L=Antalya, ST=Antalya, C=TR"
+            echo "DKD_ANDROID_KEYSTORE_PASSWORD=$PASS" >> "$GITHUB_ENV"
+            echo "DKD_ANDROID_KEY_PASSWORD=$PASS" >> "$GITHUB_ENV"
+            echo "DKD_ANDROID_KEY_ALIAS=$ALIAS" >> "$GITHUB_ENV"
+            echo 'mode=generated-fallback' >> "$GITHUB_OUTPUT"
+          fi
           test -s /tmp/dkd-signing/release.jks
-          keytool -list -keystore /tmp/dkd-signing/release.jks -storepass "$DKD_ANDROID_KEYSTORE_PASSWORD" -alias "$DKD_ANDROID_KEY_ALIAS" >/dev/null
 
       - name: Prepare Android SDK
         shell: bash
@@ -125,6 +133,7 @@ jobs:
           cp "$APK_PATH" release-output/DraBornZikir-v0.2.0-code2-release.apk
           "$ANDROID_SDK_ROOT/build-tools/36.0.0/apksigner" verify --verbose release-output/DraBornZikir-v0.2.0-code2-release.apk
           sha256sum release-output/DraBornZikir-v0.2.0-code2-release.apk | tee release-output/SHA256.txt
+          printf 'Signing mode: %s\n' '${{ steps.signing.outputs.mode }}' > release-output/SIGNING.txt
 
       - uses: actions/upload-artifact@v4
         with:
